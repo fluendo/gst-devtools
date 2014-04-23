@@ -88,6 +88,19 @@ bus_callback (GstBus * bus, GstMessage * message, gpointer data)
       }
 
       break;
+    case GST_MESSAGE_REQUEST_STATE:
+    {
+      GstState state;
+
+      gst_message_parse_request_state (message, &state);
+
+      if (GST_IS_VALIDATE_SCENARIO (GST_MESSAGE_SRC (message))
+            && state == GST_STATE_NULL) {
+        GST_DEBUG ("State change request NULL, quiting mainloop\n");
+        g_main_loop_quit (mainloop);
+      }
+      break;
+    }
     default:
       break;
   }
